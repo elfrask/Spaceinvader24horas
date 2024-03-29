@@ -1,0 +1,112 @@
+[gd_scene load_steps=9 format=3 uid="uid://6gue8k8wjf8p"]
+
+[ext_resource type="Texture2D" uid="uid://b36o6ipylvvhu" path="res://assets/imgs/sprites.png" id="1_6rmkd"]
+[ext_resource type="Script" path="res://components/alien.gd" id="1_57lkn"]
+[ext_resource type="Script" path="res://components/alien_root.gd" id="1_pxyct"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pvf0s"]
+radius = 19.0
+
+[sub_resource type="Animation" id="Animation_4v6lq"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(-20, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_jdw2y"]
+resource_name = "play"
+length = 3.0
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(-29, -0.25, 0, 0.25, 0, 697, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 3)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 61, -0.25, 0, 0.25, 0, -54, -0.25, 0, 0.25, 0, 60, -0.25, 0, 0.25, 0, -58, -0.25, 0, 0.25, 0, 63, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.4, 0.9, 1.4, 2, 2.6, 3)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2yh0s"]
+_data = {
+"RESET": SubResource("Animation_4v6lq"),
+"play": SubResource("Animation_jdw2y")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uyfcg"]
+radius = 21.587
+
+[node name="alien" type="Node2D"]
+position = Vector2(174, -20)
+script = ExtResource("1_pxyct")
+health = 3
+
+[node name="alien" type="CharacterBody2D" parent="." groups=["enemy"]]
+position = Vector2(0, -3.05176e-05)
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_57lkn")
+metadata/_edit_lock_ = true
+
+[node name="Sprites" type="Sprite2D" parent="alien"]
+modulate = Color(0, 0.741176, 0.215686, 1)
+position = Vector2(0, 1)
+scale = Vector2(3, 3)
+texture = ExtResource("1_6rmkd")
+hframes = 10
+frame = 1
+metadata/_edit_lock_ = true
+
+[node name="col" type="CollisionShape2D" parent="alien"]
+shape = SubResource("CircleShape2D_pvf0s")
+metadata/_edit_lock_ = true
+
+[node name="ani" type="AnimationPlayer" parent="alien"]
+libraries = {
+"": SubResource("AnimationLibrary_2yh0s")
+}
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="alien"]
+position = Vector2(0, 44.5)
+scale = Vector2(7.3, 5.45)
+metadata/_edit_lock_ = true
+
+[node name="Area2D" type="Area2D" parent="alien"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="alien/Area2D"]
+shape = SubResource("CircleShape2D_uyfcg")
+
+[connection signal="on_die" from="alien" to="alien" method="_on_on_die"]
+[connection signal="screen_exited" from="alien/VisibleOnScreenNotifier2D" to="alien" method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="body_entered" from="alien/Area2D" to="alien" method="_on_area_2d_body_entered"]

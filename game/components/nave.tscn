@@ -1,0 +1,84 @@
+[gd_scene load_steps=9 format=3 uid="uid://dd0cpjscaffui"]
+
+[ext_resource type="Script" path="res://components/nave.gd" id="1_k63gm"]
+[ext_resource type="Texture2D" uid="uid://b36o6ipylvvhu" path="res://assets/imgs/sprites.png" id="1_qlq3f"]
+[ext_resource type="AudioStream" uid="uid://jm3thxp4iwdy" path="res://assets/sounds/laser1.ogg" id="3_jo3jg"]
+[ext_resource type="AudioStream" uid="uid://dhpankmdeu0hm" path="res://assets/sounds/hit.ogg" id="4_apk40"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1n2hq"]
+radius = 22.0227
+
+[sub_resource type="Animation" id="Animation_pigl5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_2um5d"]
+resource_name = "hit"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.537255, 0.0627451, 0, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lmr3m"]
+_data = {
+"RESET": SubResource("Animation_pigl5"),
+"hit": SubResource("Animation_2um5d")
+}
+
+[node name="nave" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_k63gm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3.7, 3.7)
+texture = ExtResource("1_qlq3f")
+hframes = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("CircleShape2D_1n2hq")
+
+[node name="r" type="Marker2D" parent="."]
+position = Vector2(24, -34)
+
+[node name="c" type="Marker2D" parent="."]
+position = Vector2(0, -34)
+
+[node name="l" type="Marker2D" parent="."]
+position = Vector2(-24, -34)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_lmr3m")
+}
+
+[node name="laser" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_jo3jg")
+
+[node name="hit" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_apk40")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbsl2yk6okayq"]
+
+[ext_resource type="Script" path="res://components/bullet.gd" id="1_058gb"]
+[ext_resource type="Texture2D" uid="uid://b36o6ipylvvhu" path="res://assets/imgs/sprites.png" id="1_sci5i"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ugpg5"]
+size = Vector2(6, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mcuey"]
+size = Vector2(6, 12)
+
+[node name="bullet" type="CharacterBody2D"]
+script = ExtResource("1_058gb")
+
+[node name="Sprites" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("1_sci5i")
+hframes = 10
+frame = 8
+
+[node name="shape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ugpg5")
+
+[node name="on_screen" type="VisibleOnScreenNotifier2D" parent="."]
+scale = Vector2(2.1, 2.1)
+
+[node name="damage_area" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="coll" type="CollisionShape2D" parent="damage_area"]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_mcuey")
+
+[connection signal="screen_exited" from="on_screen" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="body_entered" from="damage_area" to="." method="_on_area_2d_body_entered"]
